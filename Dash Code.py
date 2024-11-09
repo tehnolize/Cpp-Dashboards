@@ -12,23 +12,28 @@ app = Dash(__name__, external_stylesheets=external_stylesheets)
 app.layout = html.Div([
     html.H1('Анализ данных о продажах и услуг'),
     html.Hr(),
-
+#----------------------------------------- Загрузка данных
+    html.H3('Загрузка данных'),
+    html.Div('Для работы с данными перетащите файл в область ниже или нажмите на кнопку для их загрузки'),
+    html.Br(),
     dcc.Upload(
         id='datatable-upload',
         children=html.Div([
             'Перетащите или ',
-            html.A('Выберите Файлы')
-        ]),
+            html.A('Выберите Файлы'),
+        ],style={'fontSize': 20}),
         style={
             'width': '100%', 'height': '60px', 'lineHeight': '60px',
             'borderWidth': '1px', 'borderStyle': 'dashed',
             'borderRadius': '5px', 'textAlign': 'center', 'margin': '10px'
         },
     ),
-
+#----------------------------------------- Таблица
+    html.Br(),
     html.Br(),
     html.H3('Таблица данных'),
-#----------------------------------------- Таблица
+    html.Div('Загруженные вами данные представлены в виде таблицы'),
+    html.Br(),
     # dcc.DatePickerRange(
     #     id='date-picker-range-for-table',
     #     start_date = None,
@@ -37,6 +42,11 @@ app.layout = html.Div([
     # ),
     dash_table.DataTable(id='datatable-upload-container', page_size=10),
 #----------------------------------------- Гистограмма
+    html.Br(),
+    html.Br(),
+    html.H3('Гистограмма'),
+    html.Div('В гистограмме отражена информация о распределении выручки по категориям товаров'),
+    html.Br(),
     # dcc.DatePickerRange(
     #     id='date-picker-range-for-hist',
     #     start_date = None,
@@ -45,6 +55,11 @@ app.layout = html.Div([
     # ),
     dcc.Graph(id='histogram'),
 #----------------------------------------- Линейчатый график
+    html.Br(),
+    html.Br(),
+    html.H3('Линейчатый график'),
+    html.Div('Линейчатый график позволяет отобразить динамику доходов в соответствии с выбранным периодом анализа'),
+    html.Br(),
     dcc.DatePickerRange(
         id='date-picker-range-for-line',
         start_date = None,
@@ -53,6 +68,11 @@ app.layout = html.Div([
     ),
     dcc.Graph(id='line'),
 #----------------------------------------- График рассеяния
+    html.Br(),
+    html.Br(),
+    html.H3('График рассеяния'),
+    html.Div('График рассеяния предназначен для анализа корреляции между прибылью и другими финансовыми параметрами'),
+    html.Br(),
     dcc.DatePickerRange(
         id='date-picker-range-for-scat',
         start_date = None,
@@ -61,8 +81,18 @@ app.layout = html.Div([
     ),
     dcc.Graph(id='scat'),
 #----------------------------------------- Круговая диаграмма
+    html.Br(),
+    html.Br(),
+    html.H3('Круговая диаграмма'),
+    html.Div('Круговая диаграмма необходима для визуализации структуры расходов по категориям'),
+    html.Br(),
     dcc.Graph(id='pie'),
 #----------------------------------------- Пузырьковая диаграмма
+    html.Br(),
+    html.Br(),
+    html.H3('Пузырьковая диаграмма'),
+    html.Div('Пузырьковая диаграмма помогает определить как связаны данные, сколько данных и как они распределены'),
+    html.Br(),
     dcc.Graph(id='bubble'),
 ])
 
@@ -206,12 +236,12 @@ def update_graph_line(start_date, end_date, contents, filename):
     data['Дата'] = pd.to_datetime(data['Дата'])
 
     if start_date == None or end_date == None:
-        figure = px.scatter(data, x=data['Дата'], y=data['Выручка'], title='График рассеяния для анализа корреляции между количеством товара и приблью')
+        figure = px.scatter(data, x=data['Дата'], y=data['Выручка'], title='График рассеяния')
         return figure
 
     else:
         filtered_data = data[(data['Дата'] >= start_date) & (data['Дата'] <= end_date)]
-        figure = px.scatter(data, x=filtered_data['Дата'], y=filtered_data['Выручка'], title='График рассеяния для анализа корреляции между количеством товара и приблью')
+        figure = px.scatter(data, x=filtered_data['Дата'], y=filtered_data['Выручка'], title='График рассеяния')
         return figure
 #--------------------------------------------- Обратный вызов для графика рассеяния
 @callback(Output('scat', 'figure'),
